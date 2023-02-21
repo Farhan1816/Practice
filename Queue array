@@ -1,0 +1,61 @@
+#include<bits/stdc++.h>
+using namespace std;
+#define loop(i,j,k) for(int i=(int)j;i<(int)k;i++)
+#define forno(i,j) for(int i=1;i<(int)j;i+=(int)k)
+#define int long long
+#define fastio ios_base::sync_with_stdio(false);cin.tie(NULL);cout.tie(NULL);
+#define ll long long
+const int INF=1000000000000;
+const int N=200000+10;
+const int M=1e9+7;
+
+class que{
+    
+
+    public: 
+    void push(int val)
+    {
+        arr[indend]=val;
+        indend++;
+    }
+    void pop()
+    {
+        indst++;
+    }
+    int ret()
+    {
+        if(indst==indend)return -1;
+        return arr[indst];
+    }
+
+    private:
+    int arr[100000];
+    int indst=0;
+    int indend=0;
+};
+
+void solve()
+{
+    int n,r,s;
+    cin >> n >> r >> s;
+    que q;;
+    q.push(n);
+    q.push(r);
+    q.push(s);
+    cout << q.ret() << "\n";
+    q.pop();
+    cout << q.ret() << "\n";
+}
+
+signed main()
+{
+    //precalc();
+    //two=modInverse(2);
+    fastio;
+    int t;
+    //cin >> t;
+    t=1;
+    for(int i=1;i<=t;i++)
+    solve();
+    return 0;
+}
