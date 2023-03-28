@@ -1,0 +1,199 @@
+#include<bits/stdc++.h>
+// #include <ext/pb_ds/assoc_container.hpp> 
+// #include <ext/pb_ds/tree_policy.hpp>
+// #include <functional>
+using namespace std;
+//using namespace __gnu_pbds;
+
+#define int long long 
+#define fastio ios_base::sync_with_stdio(false);cin.tie(NULL);cout.tie(NULL);
+#define ll long long
+
+const int INF=1e18+7;
+const int N=200000+10;
+const int M=1e9+7;
+
+
+class Node
+{
+public:
+    int roll;
+    string name;
+    double number;
+    Node* left;
+    Node* right;
+};
+
+class BST
+{
+public:
+    Node* root;
+    BST()
+    {
+        root=NULL;
+    }
+
+    Node* createNode(int roll, string name, double num)
+    {       
+        Node* newNode=new Node();
+        newNode->roll=roll;
+        newNode->name=name;
+        newNode->number=num;
+        newNode->left=NULL;
+        newNode->right=NULL;
+        return newNode;
+    }
+
+    Node* insert(Node* node, int roll, string name, double num)
+    {
+        if(node==NULL)
+        {
+            Node* newNode=createNode(roll, name, num);
+            return node=newNode;
+        }
+
+        else if(roll<=node->roll)
+        {
+            node->left=insert(node->left, roll, name, num);
+        }
+        else
+        {
+            node->right=insert(node->right, roll, name, num);
+        }
+        //cout << node->roll << " ";
+        return node;
+    }
+
+    Node* search(Node* node, int roll, string name)
+    {
+        if(node==NULL)return NULL;
+        else if(roll<node->roll)
+        {
+            return search(node->left, roll, name);
+        }
+        else if(roll>node->roll)
+        {
+            return search(node->right, roll, name);
+        }
+        else
+        {
+            if(name==node->name)
+            {
+                return node;
+            }
+            else
+            {
+                return search(node->left, roll, name);
+            }
+        }
+    }
+
+
+    Node* findMin(Node* node)
+    {
+        if(node->left==NULL)return node;
+        else return findMin(node->left);
+    }
+
+    Node* erase(Node *node, int roll, string name)
+    {
+        if(node==NULL)return NULL;
+        if(roll < node->roll)
+        {
+            node->left = erase(node->left, roll, name);
+        }
+        else if(roll > node->roll)
+        {
+            node->right = erase( node->right, roll, name);
+        }
+        else
+        {
+            if(node->name==name)
+            {
+                if(node->left==NULL)
+                {
+                    node=node->right;
+                }
+                else if(node->right==NULL)
+                {
+                    node=node->left;
+                }
+                else
+                {
+                    Node* help= findMin(node->right);
+                    //cout << help->roll << " ";
+                    //node=help;
+                    node->roll=help->roll;
+                    node->name=help->name;
+                    node->number=help->number;
+                    node->right=erase(node->right, help->roll, help->name);
+                }
+            }
+        }
+        return node;
+    }
+
+    void preorder(Node* node)
+    {
+        if(node==NULL)return;
+        cout << node->roll << " ";
+        preorder(node->left);
+        preorder(node->right);
+    }
+
+
+    void postorder(Node* node)
+    {
+        if(node==NULL)return;
+        postorder(node->left);
+        postorder(node->right);
+        cout << node->roll << " ";
+    }
+
+    void inorder(Node* node)
+    {
+        if(node==NULL)return;
+        inorder(node->left);
+        cout << node->roll << " ";
+        inorder(node->right);
+    }
+
+
+};
+
+void solve()
+{
+    BST tree;
+    tree.root= tree.insert(tree.root, 12, "Farhan", 7.8);
+    tree.root= tree.insert(tree.root, 18, "Karim", 9.3);
+    tree.root= tree.insert(tree.root, 10, "Ashiq", 8.7);
+
+    tree.preorder(tree.root);
+    cout << endl;
+
+    tree.root=tree.erase(tree.root, 12, "Farhan");
+    tree.preorder(tree.root);
+
+    cout << endl;
+
+    tree.postorder(tree.root);
+
+    cout << endl;
+
+    tree.inorder(tree.root);
+}
+
+signed main()
+{
+    //precalc();
+    fastio;
+    int t;
+    //cin >> t;
+    t=1;
+    for(int i=1;i<=t;i++)
+    {
+        //cout << "Case #" << i << ":\n" ;
+        solve();
+    }
+    return 0;
+}
