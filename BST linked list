@@ -129,6 +129,10 @@ public:
                     node->right=erase(node->right, help->roll, help->name);
                 }
             }
+            else
+            {
+                node->left= erase(node->left, roll, name);   
+            }
         }
         return node;
     }
