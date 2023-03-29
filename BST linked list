@@ -28,6 +28,7 @@ class BST
 {
 public:
     Node* root;
+    int temp;
     BST()
     {
         root=NULL;
@@ -129,9 +130,10 @@ public:
                     node->right=erase(node->right, help->roll, help->name);
                 }
             }
+            
             else
             {
-                node->left= erase(node->left, roll, name);   
+                node -> left = erase(node->left, roll, name);
             }
         }
         return node;
@@ -162,6 +164,105 @@ public:
         inorder(node->right);
     }
 
+    bool full(Node *node)
+    {
+        if((node->left==NULL && node->right!=NULL) || (node->right==NULL && node->left!=NULL))
+        {
+            return false;
+        }
+        if(node==NULL)return true;
+
+        else
+        {
+            bool left=full(node->left);
+            bool right=full(node->right);
+            if(!left || !right)return false;
+            return true;
+        }
+    }
+
+    bool left(Node *node)
+    {
+        if(node==NULL)return true;
+        if(node->right!=NULL)return false;
+        return (node->left); 
+    }
+
+    bool right(Node *node)
+    {
+        if(node==NULL)return true;
+        if(node->left!=NULL)return false;
+        return right(node->right);
+    }
+
+    bool perfect()
+    {
+        int high=0;
+        return isPerfect(root, 1, high);
+    }
+
+    bool isPerfect(Node* node, int height, int &high)
+    {   
+        if(node==NULL)
+        {
+            if(high==0)
+            {
+                high=height;
+                return true;
+            }
+            else
+            {
+                if(high!=height)return false;
+                else return true;
+            }
+        }
+
+        else if(node->left==NULL && node->right!=NULL)return false;
+        else return (isPerfect(node->left, height+1, high) & isPerfect(node->right, height+1, high)); 
+    }
+
+    bool complete()
+    {
+        int arr[100];
+        memset(arr, -1, sizeof(arr));
+        findComplete(root, 1, arr);
+        bool gapFound=false;
+        for(int i=0;i<100;i++)
+        {
+            if(arr[i]==-1)
+            {
+                if(!gapFound)gapFound=true;
+                else return false;
+            }
+        }
+        return true;
+    }
+
+    void findComplete(Node* node, int ind, int arr[])
+    {
+        if(node==NULL)return;
+        arr[ind]=node->roll;
+        findComplete(node->left, 2*ind, arr);
+        findComplete(node->right, 2*ind+1, arr);
+    }
+
+    int height(Node* node)
+    {
+        if(node==NULL)return 0;
+        return 1+max(height(node->left), height(node->right));
+    }
+
+    bool balanced(Node* node)
+    {
+        if(node==NULL)return true;
+        int lh=0, rh=0;
+
+        lh=height(node->left);
+        rh=height(node->right);
+
+        if(abs(lh-rh)<=1 and balanced(node->left) and balanced(node->right))return true;
+        return false;
+    }   
 
 };
 
@@ -170,12 +271,15 @@ void solve()
     BST tree;
     tree.root= tree.insert(tree.root, 12, "Farhan", 7.8);
     tree.root= tree.insert(tree.root, 18, "Karim", 9.3);
-    tree.root= tree.insert(tree.root, 10, "Ashiq", 8.7);
+    tree.root= tree.insert(tree.root, 29, "Rahim", 8.7);
+    tree.root= tree.insert(tree.root, 7, "Fahim", 8.7);
+    tree.root= tree.insert(tree.root, 15, "Istahak", 8.7);
+    tree.root= tree.insert(tree.root, 14, "Rifat", 8.7);
 
     tree.preorder(tree.root);
     cout << endl;
 
-    tree.root=tree.erase(tree.root, 12, "Farhan");
+    tree.root=tree.erase(tree.root, 18, "Karim");
     tree.preorder(tree.root);
 
     cout << endl;
@@ -185,6 +289,9 @@ void solve()
     cout << endl;
 
     tree.inorder(tree.root);
+
+    if(tree.balanced(tree.root))cout << "Balanced\n";
+    else cout << "Not Balanced\n";
 }
 
 signed main()
