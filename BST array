@@ -1,0 +1,284 @@
+#include<bits/stdc++.h>
+// #include <ext/pb_ds/assoc_container.hpp> 
+// #include <ext/pb_ds/tree_policy.hpp>
+// #include <functional>
+using namespace std;
+//using namespace __gnu_pbds;
+
+#define int long long 
+#define fastio ios_base::sync_with_stdio(false);cin.tie(NULL);cout.tie(NULL);
+#define ll long long
+
+const int INF=1e18+7;
+const int N=200000+10;
+const int M=1e9+7;
+
+
+class Node
+{
+public:
+   int roll;
+   string name;
+   double number;
+};
+
+class BST
+{
+public:
+    
+    Node nodes[1000];
+
+    BST()
+    {
+        for(int i=0;i<1000;i++)
+        {
+            nodes[i].roll=-1;
+        }
+    }
+
+    void insert(int ind, int roll, string name, double num)
+    {
+         //cout << ind;
+        if(nodes[ind].roll==-1)
+        {
+            //cout << roll << name << num;
+            nodes[ind].roll= roll;
+            nodes[ind].name= name;
+            nodes[ind].number= num;
+            return;
+        }
+
+        else if(roll<=nodes[ind].roll)
+        {
+            insert(2*ind , roll, name, num);
+        }
+        else
+        {
+            insert(2*ind+1 ,roll, name, num);
+        }
+
+    }
+
+    void search(int ind, int roll, string name)
+    {
+        if(nodes[ind].roll==-1)
+         {
+            cout << "Not Found" << "\n";
+            return;
+         }
+        else if(roll<nodes[ind].roll)
+        {
+            search(2*ind, roll, name);
+        }
+        else if(roll>nodes[ind].roll)
+        {
+            search(2*ind+1, roll, name);
+        }
+        else
+        {
+            if(name==nodes[ind].name)
+            {
+                cout << nodes[ind].roll << " " << nodes[ind].name << " " << nodes[ind].number << "\n";
+                return;
+            }
+            else
+            {
+                search(2*ind, roll, name);
+            }
+        }
+    }
+
+
+    Node findMin(int ind)
+    {
+        if(nodes[2*ind].roll==-1)return nodes[ind];
+        else return findMin(2*ind);
+    }
+
+    Node erase(int ind, int roll, string name)
+    {
+        if(nodes[ind].roll==-1)
+         {
+            return nodes[ind];
+         }
+        if(roll < nodes[ind].roll)
+        {
+            nodes[2*ind] = erase(2*ind, roll, name);
+        }
+        else if(roll > nodes[ind].roll)
+        {
+            nodes[2*ind+1] = erase( 2*ind+1 , roll, name);
+        }
+        else
+        {
+            if(nodes[ind].name==name)
+            {
+                if(nodes[2*ind].roll==-1)
+                {
+                    nodes[ind]=nodes[2*ind+1];
+                }
+                else if(nodes[2*ind+1].roll==-1)
+                {
+                    nodes[ind]=nodes[2*ind];
+                }
+                else
+                {
+                    Node help= findMin(2*ind+1);
+                    nodes[ind].roll=help.roll;
+                    nodes[ind].name=help.name;
+                    nodes[ind].number=help.number;
+                    nodes[2*ind+1]=erase(2*ind+1, help.roll, help.name);
+                }
+            }
+
+            else
+            {
+               nodes[2*ind]=erase(2*ind, roll, name);
+            }
+        }
+        return nodes[ind];
+    }
+
+    void preorder(int ind)
+    {
+        if(nodes[ind].roll==-1)return;
+        cout << nodes[ind].roll << " ";
+        preorder(2*ind);
+        preorder(2*ind+1);
+    }
+
+
+    void postorder(int ind)
+    {
+        if(nodes[ind].roll==-1)return;
+        postorder(2*ind);
+        postorder(2*ind+1);
+        cout << nodes[ind].roll << " ";
+    }
+
+    void inorder(int ind)
+    {
+        if(nodes[ind].roll==-1)return;
+        inorder(2*ind);
+        cout << nodes[ind].roll << " ";
+        inorder(2*ind+1);
+    }
+
+    bool right(int ind)
+    {
+      if(nodes[ind].roll==-1)return true;
+      if(nodes[2*ind+1].roll!=-1)return false;
+      return right(2*ind +1);
+    }
+
+    bool left(int ind)
+    {
+      if(nodes[ind].roll==-1)return true;
+      if(nodes[2*ind+1].roll!=-1)return false;
+      return left(2*ind);
+    }
+
+    bool full(int ind)
+    {
+      if(nodes[ind].roll==-1)return true;
+      if(nodes[2*ind].roll!=-1 && nodes[2*ind+1].roll==-1)return false;
+      if(nodes[2*ind].roll==-1 && nodes[2*ind+1].roll!=-1)return false;
+      if(full(2*ind) && full(2*ind+1))return true;
+      return false;
+    }
+
+    bool complete()
+    {
+      bool found=false;
+      for(int i=0;i<1000;i++)
+      {
+         if(nodes[i].roll==-1)
+         {
+            if (!found)
+            {
+               /* code */
+               found=true;
+            }
+            else return false;
+         }
+      }
+      return true;
+    }
+
+
+    int height(int ind)
+    {
+      if(nodes[ind].roll==-1)return 0;
+      else return 1+max(height(2*ind), height(2*ind+1));
+    }
+
+    bool balanced(int ind)
+    {
+      if(nodes[ind].roll==-1)return true;
+      int rh=0;
+      int lh=0;
+      lh=height(2*ind);
+      rh=height(2*ind+1);
+      if(abs(lh-rh)<=1 and balanced(2*ind) and balanced(2*ind))return true;
+      else return false;
+    }
+
+    bool isPerfect(int ind)
+    {
+      if(nodes[ind].roll==-1)return true;
+      if(nodes[2*ind].roll!=-1 && nodes[2*ind+1].roll==-1)return false;
+      if(nodes[2*ind].roll==-1 && nodes[2*ind+1].roll!=-1)return false;
+      if(isPerfect(2*ind) && isPerfect(2*ind+1))return true;
+      else return false; 
+    }
+
+    bool perfect()
+    {
+      int lh=height(2);
+      int rh=height(3);
+      if(lh==rh && isPerfect(1))return true;
+      return false;
+    }
+
+};
+
+void solve()
+{
+    BST tree;
+    //cout << "hello";
+    tree.insert(1, 12, "Farhan", 7.8);
+    tree.insert(1, 18, "Karim", 9.3);
+    tree.insert(1, 7, "Fahim", 8.7);
+    tree.insert(1, 14, "Karim", 8.7);
+    tree.insert(1, 3, "Tanzim", 8.7);
+    tree.insert(1, 112, "Istahak", 8.7);
+
+    tree.preorder(1);
+    cout << endl;
+
+    tree.nodes[1]=tree.erase(1, 18, "Karim");
+    tree.preorder(1);
+
+    cout << endl;
+
+    tree.postorder(1);
+
+    cout << endl;
+
+    tree.search(1, 7, "Ashiq");
+}
+
+signed main()
+{
+    //precalc();
+    fastio;
+    int t;
+    //cin >> t;
+    t=1;
+    for(int i=1;i<=t;i++)
+    {
+        //cout << "Case #" << i << ":\n" ;
+        solve();
+    }
+    return 0;
+}
