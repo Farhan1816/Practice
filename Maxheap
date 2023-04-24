@@ -69,10 +69,36 @@ public:
         int parent=i;
 
         
-        while(parent>=1)
+        while(parent<=indNow)
         {
-            heapify(parent);
-            parent=parent/2;
+            if(2*parent<=indNow and 2*parent+1<=indNow)
+            {
+                if(heap[2*parent]>=heap[2*parent+1])
+                {
+                    if(heap[2*parent]>heap[parent])
+                    {
+                        heapify(parent);
+                        parent=2*parent;
+                    }
+                    else break;
+                }
+                else
+                {
+                    if(heap[2*parent+1]>heap[parent])
+                    {
+                        heapify(parent);
+                        parent=2*parent+1;
+                    }
+                    else break;
+                }
+            }
+
+            else if(2*parent<=indNow)
+            {
+                heapify(parent);
+                parent=2*parent;
+            }
+            else break;
         }
     } 
 
@@ -92,6 +118,7 @@ public:
 void solve()
 {
     maxHeap heap;
+    heap.insert(110);
     heap.insert(5);
     heap.insert(10);
     heap.insert(15);
@@ -99,6 +126,8 @@ void solve()
     heap.insert(50);
     heap.insert(47);
     heap.insert(13);
+    heap.insert(110);
+
 
     cout << heap.peek() << "\n";
     while(heap.retSize()>0)
