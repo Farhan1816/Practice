@@ -133,7 +133,7 @@ public:
         else
         {
             head=arr[heap[1].second];
-            string help="0";
+            string help="";
             dfs(head, help);
         }
         
