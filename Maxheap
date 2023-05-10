@@ -68,14 +68,6 @@ public:
 
         int parent=i;
 
-        while(parent>=1)
-        {
-            heapify(parent);
-            parent=parent/2;
-        }
-
-        parent=i;
-
         while(parent<=indNow)
         {
             if(2*parent<=indNow and 2*parent+1<=indNow)
