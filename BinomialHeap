@@ -23,7 +23,7 @@ public:
 
     Node *sibling, *parent, *child;
     
-    //Parameterised Constructor
+ 
     Node(int key)
     {
         this -> key = key;
